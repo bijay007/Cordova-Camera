@@ -305,11 +305,11 @@ function takePictureFromFileWindows(successCallback, errorCallback, args) {
 
 function takePictureFromCamera(successCallback, errorCallback, args) {
     // Check if necessary API available
-    if (!Windows.Media.Capture.CameraCaptureUI) {
+    // if (!Windows.Media.Capture.CameraCaptureUI) {
         takePictureFromCameraWP(successCallback, errorCallback, args);
-    } else {
-        takePictureFromCameraWindows(successCallback, errorCallback, args);
-    }
+    // } else {
+    //    takePictureFromCameraWindows(successCallback, errorCallback, args);
+    // }
 }
 
 function takePictureFromCameraWP(successCallback, errorCallback, args) {
