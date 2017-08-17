@@ -298,6 +298,7 @@ function takePictureFromCameraWP(successCallback, errorCallback, args) {
         // z-order style element for capturePreview and cameraCancelButton elts
         // is necessary to avoid overriding by another page elements, -1 sometimes is not enough
         capturePreview = document.createElement("video");
+        console.log('capture preview exits: ', capturePreview);
         capturePreview.style.cssText = "position: fixed; left: 0; top: 0; width: 100%; height: 100%; z-index: " + (HIGHEST_POSSIBLE_Z_INDEX - 1) + ";";
 
         // Create capture button
@@ -311,6 +312,7 @@ function takePictureFromCameraWP(successCallback, errorCallback, args) {
         cameraCancelButton.style.cssText = buttonStyle + "position: fixed; right: 0; bottom: 0; margin: 20px; z-index: " + HIGHEST_POSSIBLE_Z_INDEX + ";";
 
         capture = new CaptureNS.MediaCapture();
+        console.log('In w10 api, its the ui constructor: ', capture);
 
         captureSettings = new CaptureNS.MediaCaptureInitializationSettings();
         captureSettings.streamingCaptureMode = CaptureNS.StreamingCaptureMode.video;
@@ -324,10 +326,13 @@ function takePictureFromCameraWP(successCallback, errorCallback, args) {
     }
 
     function startCameraPreview() {
+        console.log('starting camera preview...');
         // Search for available camera devices
         // This is necessary to detect which camera (front or back) we should use
         var DeviceEnum = Windows.Devices.Enumeration;
+        console.log('DeviceEnum: ', DeviceEnum);
         var expectedPanel = cameraDirection === 1 ? DeviceEnum.Panel.front : DeviceEnum.Panel.back;
+        console.log('cam direction actual: ', expectedPanel);
 
         // Add focus event handler to capture the event when user suspends the app and comes back while the preview is on
         window.addEventListener("focus", continueVideoOnFocus);
@@ -353,6 +358,7 @@ function takePictureFromCameraWP(successCallback, errorCallback, args) {
             // create focus control if available
             var VideoDeviceController = capture.videoDeviceController;
             var FocusControl = VideoDeviceController.focusControl;
+            console.log('Focuscontrol present? :',FocusControl);
 
             if (FocusControl.supported === true) {
                 capturePreview.addEventListener('click', function () {
