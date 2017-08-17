@@ -1,30 +1,5 @@
-/*
- *
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- *
-*/
-
-/*jshint unused:true, undef:true, browser:true */
-/*global Windows:true, URL:true, module:true, require:true, WinJS:true */
-
-
+console.log('Loading.....');
 var Camera = require('./Camera');
-
 
 var getAppData = function () {
     return Windows.Storage.ApplicationData.current;
@@ -39,22 +14,6 @@ var fileIO = Windows.Storage.FileIO;
 var pickerLocId = Windows.Storage.Pickers.PickerLocationId;
 
 module.exports = {
-
-    // args will contain :
-    //  ...  it is an array, so be careful
-    // 0 quality:50,
-    // 1 destinationType:Camera.DestinationType.FILE_URI,
-    // 2 sourceType:Camera.PictureSourceType.CAMERA,
-    // 3 targetWidth:-1,
-    // 4 targetHeight:-1,
-    // 5 encodingType:Camera.EncodingType.JPEG,
-    // 6 mediaType:Camera.MediaType.PICTURE,
-    // 7 allowEdit:false,
-    // 8 correctOrientation:false,
-    // 9 saveToPhotoAlbum:false,
-    // 10 popoverOptions:null
-    // 11 cameraDirection:0
-
     takePicture: function (successCallback, errorCallback, args) {
         var sourceType = args[2];
 
@@ -303,7 +262,7 @@ function takePictureFromFileWindows(successCallback, errorCallback, args) {
     });
 }
 
-function takePictureFromCamera(successCallback, errorCallback, args) {
+function takePictureFromCamera(successCallback, errorCallback, args) { // OK.It's here where I want to try old API on W10
     // Check if necessary API available
     // if (!Windows.Media.Capture.CameraCaptureUI) {
         takePictureFromCameraWP(successCallback, errorCallback, args);
@@ -313,6 +272,7 @@ function takePictureFromCamera(successCallback, errorCallback, args) {
 }
 
 function takePictureFromCameraWP(successCallback, errorCallback, args) {
+    console.log('Calls the old API');
     // We are running on WP8.1 which lacks CameraCaptureUI class
     // so we need to use MediaCapture class instead and implement custom UI for camera
     var destinationType = args[1],
@@ -330,6 +290,7 @@ function takePictureFromCameraWP(successCallback, errorCallback, args) {
         sensor = null;
 
     function createCameraUI() {
+        console.log('Creating custom UI for the camera preview....');
         // create style for take and cancel buttons
         var buttonStyle = "width:45%;padding: 10px 16px;font-size: 18px;line-height: 1.3333333;color: #333;background-color: #fff;border-color: #ccc; border: 1px solid transparent;border-radius: 6px; display: block; margin: 20px; z-index: 1000;border-color: #adadad;";
 
@@ -704,6 +665,7 @@ function takePictureFromCameraWP(successCallback, errorCallback, args) {
     }
 }
 
+// This API doesn't allow control over the UI windows size as it has no custom UI methods in it :(
 function takePictureFromCameraWindows(successCallback, errorCallback, args) {
     var destinationType = args[1],
         targetWidth = args[3],
