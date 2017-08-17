@@ -338,6 +338,7 @@ function takePictureFromCameraWP(successCallback, errorCallback, args) {
         window.addEventListener("focus", continueVideoOnFocus);
 
         DeviceEnum.DeviceInformation.findAllAsync(DeviceEnum.DeviceClass.videoCapture).then(function (devices) {
+            console.log('devices found: ', devices);
             if (devices.length <= 0) {
                 destroyCameraPreview();
                 errorCallback('Camera not found');
@@ -351,6 +352,7 @@ function takePictureFromCameraWP(successCallback, errorCallback, args) {
             });
 
             captureSettings.photoCaptureSource = Windows.Media.Capture.PhotoCaptureSource.photo;
+            console.log('captureSetting with photo source: ', captureSettings);
 
             return capture.initializeAsync(captureSettings);
         }).then(function () {
