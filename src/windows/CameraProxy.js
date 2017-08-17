@@ -386,6 +386,7 @@ function takePictureFromCameraWP(successCallback, errorCallback, args) {
 
             // Bind events to controls
             sensor = Windows.Devices.Sensors.SimpleOrientationSensor.getDefault();
+            console.log('device sensor: ', sensor);
             if (sensor !== null) {
                 sensor.addEventListener("orientationchanged", onOrientationChange);
             }
@@ -403,6 +404,7 @@ function takePictureFromCameraWP(successCallback, errorCallback, args) {
 
             // Get available aspect ratios
             var aspectRatios = getAspectRatios(capture);
+            console.log('aspect ratios: ', aspectRatios);
 
             // Couldn't find a good ratio
             if (aspectRatios.length === 0) {
