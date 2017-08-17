@@ -398,6 +398,7 @@ function takePictureFromCameraWP(successCallback, errorCallback, args) {
             // Change default orientation
             if (sensor) {
                 setPreviewRotation(sensor.getCurrentOrientation());
+                console.log(sensor.getCurrentOrientation());
             } else {
                 setPreviewRotation(Windows.Graphics.Display.DisplayInformation.getForCurrentView().currentOrientation);
             }
