@@ -16,21 +16,14 @@ var pickerLocId = Windows.Storage.Pickers.PickerLocationId;
 module.exports = {
     takePicture: function (successCallback, errorCallback, args) {
         var sourceType = args[2];
-
-        if (sourceType != Camera.PictureSourceType.CAMERA) {
-            takePictureFromFile(successCallback, errorCallback, args);
-        } else {
-            takePictureFromCamera(successCallback, errorCallback, args);
-        }
+        takePictureFromCamera(successCallback, errorCallback, args);
     }
 };
 
-// https://msdn.microsoft.com/en-us/library/windows/apps/ff462087(v=vs.105).aspx
 var windowsVideoContainers = [".avi", ".flv", ".asx", ".asf", ".mov", ".mp4", ".mpg", ".rm", ".srt", ".swf", ".wmv", ".vob"];
 var windowsPhoneVideoContainers =  [".avi", ".3gp", ".3g2", ".wmv", ".3gp", ".3g2", ".mp4", ".m4v"];
 
-// Default aspect ratio 1.78 (16:9 hd video standard)
-var DEFAULT_ASPECT_RATIO = '1.8';
+var DEFAULT_ASPECT_RATIO = '1.8'; // Default aspect ratio 1.78 (16:9 hd video standard)
 
 // Highest possible z-index supported across browsers. Anything used above is converted to this value.
 var HIGHEST_POSSIBLE_Z_INDEX = 2147483647;
@@ -145,8 +138,7 @@ function takePictureFromCameraWP(successCallback, errorCallback, args) {
         sensor = null;
 
     function createCameraUI() {
-        // create style for take and cancel buttons
-        var buttonStyle = "width:45%;padding: 10px 16px;font-size: 18px;line-height: 1.3333333;color: #333;background-color: #fff;border-color: #ccc; border: 1px solid transparent;border-radius: 6px; display: block; margin: 20px; z-index: 1000;border-color: #adadad;";
+        var buttonStyle = "width:45%;padding: 10px 16px;border: 2px;font-size: 18px;font-weight: bold;line-height: 1.3333333;color: #333;background-color: #fff;border-color: #ccc; border: 1px solid transparent;border-radius: 6px; display: block; margin: 20px; z-index: 1000;border-color: #adadad;";
         // Create fullscreen preview
         // z-order style element for capturePreview and cameraCancelButton elts
         // is necessary to avoid overriding by another page elements, -1 sometimes is not enough
@@ -155,7 +147,7 @@ function takePictureFromCameraWP(successCallback, errorCallback, args) {
 
         // Create capture button
         cameraCaptureButton = document.createElement("button");
-        cameraCaptureButton.innerText = "Take";
+        cameraCaptureButton.innerText = "Click";
         cameraCaptureButton.style.cssText = buttonStyle + "position: fixed; left: 0; bottom: 0; margin: 20px; z-index: " + HIGHEST_POSSIBLE_Z_INDEX + ";";
 
         // Create cancel button
@@ -169,8 +161,7 @@ function takePictureFromCameraWP(successCallback, errorCallback, args) {
     }
 
     function continueVideoOnFocus() {
-        // if preview is defined it would be stuck, play it
-        if (capturePreview) {
+        if (capturePreview) {         // if preview is defined it would be stuck, play it
             capturePreview.play();
         }
     }
@@ -201,7 +192,6 @@ function takePictureFromCameraWP(successCallback, errorCallback, args) {
             return capture.initializeAsync(captureSettings);
 
         }).then(function () {
-
             // create focus control if available
             var VideoDeviceController = capture.videoDeviceController;
             var FocusControl = VideoDeviceController.focusControl;
@@ -217,13 +207,11 @@ function takePictureFromCameraWP(successCallback, errorCallback, args) {
                     var preset = Windows.Media.Devices.FocusPreset.autoNormal;
                     var parent = this;
                     FocusControl.setPresetAsync(preset).done(function () {
-                        // set the clicked attribute back to '0' to allow focus again
-                        parent.setAttribute('clicked', '0');
+                        parent.setAttribute('clicked', '0'); // set the clicked attribute back to '0' to allow focus again
                     });
                 });
             }
 
-            // msdn.microsoft.com/en-us/library/windows/apps/hh452807.aspx
             capturePreview.msZoom = true;
             capturePreview.src = URL.createObjectURL(capture);
             capturePreview.play();
@@ -244,7 +232,7 @@ function takePictureFromCameraWP(successCallback, errorCallback, args) {
             } else {
                 setPreviewRotation(Windows.Graphics.Display.DisplayInformation.getForCurrentView().currentOrientation);
             }
-
+   
             // Get available aspect ratios
             var aspectRatios = getAspectRatios(capture);
 
@@ -273,7 +261,7 @@ function takePictureFromCameraWP(successCallback, errorCallback, args) {
     }
 
     function destroyCameraPreview() {
-        // If sensor is available, remove event listener
+        // Remove event listeners from sensor and buttons
         if (sensor !== null) {
             sensor.removeEventListener('orientationchanged', onOrientationChange);
         }
@@ -372,14 +360,17 @@ function takePictureFromCameraWP(successCallback, errorCallback, args) {
         var photoAspectRatios = videoDeviceController.getAvailableMediaStreamProperties(CapMSType.photo).map(function (element) {
             return (element.width / element.height).toFixed(1);
         }).filter(function (element, index, array) { return (index === array.indexOf(element)); });
+        console.log('photoAspectRatios: ', photoAspectRatios);
 
         var videoAspectRatios = videoDeviceController.getAvailableMediaStreamProperties(CapMSType.videoRecord).map(function (element) {
             return (element.width / element.height).toFixed(1);
         }).filter(function (element, index, array) { return (index === array.indexOf(element)); });
+        console.log('videoAspectRatios :', videoAspectRatios);
 
         var videoPreviewAspectRatios = videoDeviceController.getAvailableMediaStreamProperties(CapMSType.videoPreview).map(function (element) {
             return (element.width / element.height).toFixed(1);
         }).filter(function (element, index, array) { return (index === array.indexOf(element)); });
+        console.log('videoPreviewAspectRatios :', videoPreviewAspectRatios);
 
         var allAspectRatios = [].concat(photoAspectRatios, videoAspectRatios, videoPreviewAspectRatios);
 
@@ -390,6 +381,7 @@ function takePictureFromCameraWP(successCallback, errorCallback, args) {
             map[item]++;
             return map;
         }, {});
+        console.log(Reduced aspect object: ', aspectObj);
 
         return Object.keys(aspectObj).filter(function (k) {
             return aspectObj[k] === 3;
@@ -477,11 +469,9 @@ function takePictureFromCameraWP(successCallback, errorCallback, args) {
      */
     function orientationToRotation(orientation) {
         // VideoRotation enumerable and BitmapRotation enumerable have the same values
-        // https://msdn.microsoft.com/en-us/library/windows/apps/windows.media.capture.videorotation.aspx
-        // https://msdn.microsoft.com/en-us/library/windows/apps/windows.graphics.imaging.bitmaprotation.aspx
         console.log('Orientation value passed: ', orientation);
-        console.log('Sensors: ',Windows.Devices.Sensors);
         console.log('Simple orientation: ',Windows.Devices.Sensors.SimpleOrientation);
+        console.log('Video Rotation Degrees :', Windows.Media.Capture.VideoRotation);
         switch (orientation) {
             // portrait
             case Windows.Devices.Sensors.SimpleOrientation.notRotated:
