@@ -360,17 +360,14 @@ function takePictureFromCameraWP(successCallback, errorCallback, args) {
         var photoAspectRatios = videoDeviceController.getAvailableMediaStreamProperties(CapMSType.photo).map(function (element) {
             return (element.width / element.height).toFixed(1);
         }).filter(function (element, index, array) { return (index === array.indexOf(element)); });
-        console.log('photoAspectRatios: ', photoAspectRatios);
 
         var videoAspectRatios = videoDeviceController.getAvailableMediaStreamProperties(CapMSType.videoRecord).map(function (element) {
             return (element.width / element.height).toFixed(1);
         }).filter(function (element, index, array) { return (index === array.indexOf(element)); });
-        console.log('videoAspectRatios :', videoAspectRatios);
 
         var videoPreviewAspectRatios = videoDeviceController.getAvailableMediaStreamProperties(CapMSType.videoPreview).map(function (element) {
             return (element.width / element.height).toFixed(1);
         }).filter(function (element, index, array) { return (index === array.indexOf(element)); });
-        console.log('videoPreviewAspectRatios :', videoPreviewAspectRatios);
 
         var allAspectRatios = [].concat(photoAspectRatios, videoAspectRatios, videoPreviewAspectRatios);
 
@@ -381,7 +378,6 @@ function takePictureFromCameraWP(successCallback, errorCallback, args) {
             map[item]++;
             return map;
         }, {});
-        console.log(Reduced aspect object: ', aspectObj);
 
         return Object.keys(aspectObj).filter(function (k) {
             return aspectObj[k] === 3;
@@ -475,21 +471,21 @@ function takePictureFromCameraWP(successCallback, errorCallback, args) {
         switch (orientation) {
             // portrait
             case Windows.Devices.Sensors.SimpleOrientation.notRotated:
-                return Windows.Media.Capture.VideoRotation.clockwise90Degrees;
+                return Windows.Media.Capture.VideoRotation.none;
             // landscape
             case Windows.Devices.Sensors.SimpleOrientation.rotated90DegreesCounterclockwise:
-                return Windows.Media.Capture.VideoRotation.none;
+                return Windows.Media.Capture.VideoRotation.clockwise270Degrees;
             // portrait-flipped (not supported by WinPhone Apps)
             case Windows.Devices.Sensors.SimpleOrientation.rotated180DegreesCounterclockwise:
                 // Falling back to portrait default
-                return Windows.Media.Capture.VideoRotation.clockwise90Degrees;
+                return Windows.Media.Capture.VideoRotation.clockwise180Degrees;
             // landscape-flipped
             case Windows.Devices.Sensors.SimpleOrientation.rotated270DegreesCounterclockwise:
-                return Windows.Media.Capture.VideoRotation.clockwise180Degrees;
+                return Windows.Media.Capture.VideoRotation.clockwise90Degrees;
             // faceup & facedown
             default:
                 // Falling back to portrait default
-                return Windows.Media.Capture.VideoRotation.clockwise90Degrees;
+                return Windows.Media.Capture.VideoRotation.none;
         }
     }
 
