@@ -474,14 +474,14 @@ function takePictureFromCameraWP(successCallback, errorCallback, args) {
                 return Windows.Media.Capture.VideoRotation.none;
             // landscape
             case Windows.Devices.Sensors.SimpleOrientation.rotated90DegreesCounterclockwise:
-                return Windows.Media.Capture.VideoRotation.clockwise270Degrees;
+                return Windows.Media.Capture.VideoRotation.clockwise90Degrees;
             // portrait-flipped (not supported by WinPhone Apps)
             case Windows.Devices.Sensors.SimpleOrientation.rotated180DegreesCounterclockwise:
                 // Falling back to portrait default
                 return Windows.Media.Capture.VideoRotation.clockwise180Degrees;
             // landscape-flipped
             case Windows.Devices.Sensors.SimpleOrientation.rotated270DegreesCounterclockwise:
-                return Windows.Media.Capture.VideoRotation.clockwise90Degrees;
+                return Windows.Media.Capture.VideoRotation.clockwise270Degrees;
             // faceup & facedown
             default:
                 // Falling back to portrait default
